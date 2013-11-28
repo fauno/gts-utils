@@ -69,10 +69,10 @@ TFILE=/tmp/$(date +%Y%m%d%H%s)
 
 cp data/pool.conf $TFILE
 
-sed -i "s/{{NAME}}/$NAME/g" $TFILE
-sed -i "s/{{USER}}/$USER/g" $TFILE
-sed -i "s/{{GROUP}}/$GROUP/g" $TFILE
-sed -i "s/{{LISTEN}}/$LISTEN/g" $TFILE
+sed -i "s/i\{\{NAME\}\}/$NAME/g" $TFILE
+sed -i "s/\{\{USER\}\}/$USER/g" $TFILE
+sed -i "s/\{\{GROUP\}\}/$GROUP/g" $TFILE
+sed -i "s/\{\{LISTEN\}\}/$LISTEN/g" $TFILE
 
 if [ -z $JAIL ]; then
     JAILP="/"
@@ -80,11 +80,11 @@ else
     JAILP="${JAILS_PATH}/${JAIL}"
 fi
 
-sed -i "s/{{CHROOT}}/$JAILP/g" $TFILE
+sed -i "s/\{\{CHROOT\}\}/$JAILP/g" $TFILE
 
 DEST="${OUT_PATH}${POOL_PATH}/${NAME}.conf"
 
-if [ ! -d "${OUT_PATH}${POOL_PATH}"]; then
+if [ ! -d "${OUT_PATH}${POOL_PATH}" ]; then
     mkdir -p "${OUT_PATH}${POOL_PATH}"
 fi
 
