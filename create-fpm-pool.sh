@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 POOL_PATH="/etc/php5/fpm/pool.d"
 JAILS_PATH="/srv/jails"
