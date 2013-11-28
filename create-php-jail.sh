@@ -38,6 +38,10 @@ chmod 666 $DIRECTORY/dev/{null,random,urandom}
 
 echo "mounting directory /var/www/$NAME"
 
+if [ ! -d /var/www/$NAME ]; then
+    mkdir -p /var/www/$NAME
+fi
+
 echo "# mount www directory on jail for $NAME" >> /etc/fstab
 echo "/var/www/$NAME $DIRECTORY/var/www none bind" >> /etc/fstab
 
