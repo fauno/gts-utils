@@ -13,7 +13,7 @@ NGINX_CONF=0
 
 while [ $CONFIRM -eq 0 ]; do
 
-    while [ $NAME -eq "" ]; do
+    while [ -z $NAME  ]; do
         read -p "Nombre: " NAME
 
         if [ -f "${POOL_PATH}/${NAME}.conf" ]; then
@@ -25,29 +25,29 @@ while [ $CONFIRM -eq 0 ]; do
 
     read  -p "Usuario [www-data]: " USER
 
-    if [ $USER -eq "" ]; then
+    if [ -z $USER ]; then
         USER="www-data"
     fi
 
     read -p "Grupo [www-data]: " GROUP
 
-    if [ $GROUP -eq "" ]; then
+    if [ -z $GROUP ]; then
         GROUP="www-data"
     fi
 
     read -p "Escucha en... [/var/run/php5-fpm-\$pool.sock]: " LISTEN
 
-    if [ $LISTEN -eq "" ]; then
+    if [ -z $LISTEN ]; then
         LISTEN = "/var/run/php5-fpm-\$pool.sock"
     fi
 
     read -p "Jail [ninguna]: " JAIL
 
-    if [ $JAIL -nw "" ]; then
+    if [ ! -z $JAIL ]; then
 
         if [ ! -d "${JAILS_PATH}/${JAIL}" ]; then
             read -p "Jail $JAIL no existe, crear? (y/n) " CC
-            if [ $CC -eq "y" ]; then
+            if [ $CC == "y" ]; then
                CREATE_JAIL=1
            fi
 
@@ -74,7 +74,7 @@ sed -i "s/{{USER}}/$USER/g" $TFILE
 sed -i "s/{{GROUP}}/$GROUP/g" $TFILE
 sed -i "s/{{LISTEN}}/$LISTEN/g" $TFILE
 
-if [ $JAIL -eq "" ]; then
+if [ -z $JAIL ]; then
     JAILP="/"
 else
     JAILP="${JAILS_PATH}/${JAIL}"
