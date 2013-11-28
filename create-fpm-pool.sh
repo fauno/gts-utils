@@ -38,7 +38,7 @@ while [ $CONFIRM -eq 0 ]; do
     read -p "Escucha en... [/var/run/php5-fpm-\$pool.sock]: " LISTEN
 
     if [ -z $LISTEN ]; then
-        LISTEN = "/var/run/php5-fpm-\$pool.sock"
+        LISTEN="/var/run/php5-fpm-\$pool.sock"
     fi
 
     read -p "Jail [ninguna]: " JAIL
