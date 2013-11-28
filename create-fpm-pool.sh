@@ -45,7 +45,7 @@ while [ $CONFIRM -eq 0 ]; do
 
     if [ $JAIL -nw "" ]; then
 
-        if [! -d "${JAILS_PATH}/${JAIL}" ]; then
+        if [ ! -d "${JAILS_PATH}/${JAIL}" ]; then
             read -p "Jail $JAIL no existe, crear? (y/n) " CC
             if [ $CC -eq "y" ]; then
                CREATE_JAIL=1
@@ -84,7 +84,7 @@ sed -i "s/{{CHROOT}}/$JAILP/g" $TFILE
 
 DEST="${OUT_PATH}${POOL_PATH}/${NAME}.conf"
 
-if [! -d "${OUT_PATH}${POOL_PATH}"]; then
+if [ ! -d "${OUT_PATH}${POOL_PATH}"]; then
     mkdir -p "${OUT_PATH}${POOL_PATH}"
 fi
 

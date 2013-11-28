@@ -38,7 +38,7 @@ chmod 666 $DIRECTORY/dev/{null,random,urandom}
 
 echo "mounting directory /var/www/$NAME"
 
-if [! -d /var/www/$NAME ]; then
+if [ ! -d /var/www/$NAME ]; then
     mkdir -p /var/www/$NAME
 fi
 
