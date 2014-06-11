@@ -45,7 +45,7 @@ ln -s usr/lib lib
 chmod a+rw -R tmp
 
 # copiar archivos del sistema
-cp --dereference /etc/localtime etc/
+cp --archive --dereference /etc/localtime etc/
 cp --archive /etc/{hosts,nsswitch.conf,resolv.conf} etc/
 cp --archive /lib/libnss_files* usr/lib/
 cp --archive /lib/libnss_dns* usr/lib/
@@ -58,9 +58,12 @@ grep "^${USER}:" /etc/passwd >>etc/passwd
 cp "${CUR}/"data/group etc/
 sed -i "s/{{USER}}/$USER/g" etc/group
 
+chmod 644 etc/{group,passwd}
+
 # permitir trabajar sobre pub
 chown -R ${USER}:${GROUP} pub/
 chmod -R g+s pub/
+chmod -R u+s pub/
 chmod -R 750 pub/
 
 # crear archivos especiales
