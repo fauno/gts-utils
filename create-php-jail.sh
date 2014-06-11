@@ -10,6 +10,8 @@ test -d "${DIRECTORY}/jail" && exit 1
 
 echo "Jail"
 mkdir -p "${DIRECTORY}/jail"
+chown root:root "${DIRECTORY}/jail"
+chmod 750 "${DIRECTORY}/jail"
 pushd "${DIRECTORY}/jail" &>/dev/null
 
 echo "Arbol"
