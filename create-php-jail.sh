@@ -9,7 +9,7 @@ DIRECTORY=/srv/http/$NAME
 test -f "${DIRECTORY}/.jail" && exit 1
 
 echo "Arbol"
-mkdir -p $DIRECTORY/{etc,tmp,usr/bin,dev,srv}
+mkdir -p $DIRECTORY/{etc,tmp,usr/bin,dev,srv/http/${DIRECTORY}}
 
 echo "Permisos"
 chmod a+rw -R $DIRECTORY/tmp
