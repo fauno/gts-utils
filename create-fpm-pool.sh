@@ -36,7 +36,7 @@ chmod 755 "${DIRECTORY}"
 pushd "${DIRECTORY}" &>/dev/null
 
 # crear directorios base y pub que es donde van los archivos php
-mkdir -p {etc,tmp,usr/bin,dev,pub}
+mkdir -p {etc,tmp,usr/{lib,bin},dev,pub}
 # symlinks
 ln -s usr/bin bin
 ln -s usr/lib lib
@@ -55,7 +55,7 @@ cp "${CUR}/"data/passwd etc/
 grep "^${USER}:" /etc/passwd >>etc/passwd
 
 # generar un group especifico
-cd "${CUR}/"data/group etc/
+cp "${CUR}/"data/group etc/
 sed -i "s/{{USER}}/$USER/g" etc/group
 
 # permitir trabajar sobre pub
