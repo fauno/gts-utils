@@ -9,9 +9,7 @@ if [ -e $DIRECTORY ]; then
 fi
 
 echo "Creando arbol"
-mkdir -p $DIRECTORY/{etc,tmp,usr,var,dev} \
-         $DIRECTORY/var/{www,cache,tmp,lib} \
-         $DIRECTORY/usr/share
+mkdir -p $DIRECTORY/{etc,tmp,usr/bin,dev,srv}
 
 echo "Permisos"
 chmod a+rw -R $DIRECTORY/tmp
