@@ -1,100 +1,72 @@
 #!/bin/bash
+set -e
 
-POOL_PATH="/etc/php5/fpm/pool.d"
-JAILS_PATH="/srv/jails"
-OUT_PATH=""
+CUR="$(dirname "$(readlink -f "$0")")"
+POOLS="${POOLS:-/etc/php/fpm.d/}"
 
-echo "Creando pool de PHP-FPM"
+NAME="$1"
+# convertir ejemplo.org a ejemplo-org
+USER="${1//\./-}"
+# el sistema tiene un límite de usuario de 31-32 caracteres
+USER="${USER:0:30}"
+GROUP=${GROUP:-http}
+DIRECTORY=/srv/http/${NAME}
 
-NAME=""
-CONFIRM=0
-CREATE_JAIL=0
-NGINX_CONF=0
+# la jaula ya existe
+test -f "${DIRECTORY}/.jail" && exit 1
 
-while [ $CONFIRM -eq 0 ]; do
+useradd --comment "PHP-FPM Jail" \
+        --home-dir "/srv/http/${NAME}" \
+        --create-home \
+        --shell /bin/false \
+        --gid ${GROUP} \
+        ${USER}
 
-    while [ -z $NAME  ]; do
-        read -p "Nombre: " NAME
+sed -e "s|{{NAME}}|$NAME|g" \
+    -e "s|{{USER}}|$USER|g" \
+    -e "s|{{GROUP}}|$GROUP|g" \
+    "${CUR}/"data/pool.conf >"${POOLS}/${NAME}.conf"
 
-        if [ -f "${POOL_PATH}/${NAME}.conf" ]; then
-            echo "Ese pool ya existe"
-            NAME=""
-        fi
+mkdir -p "${DIRECTORY}"
+# asegurar que no se pueda escapar de la jaula
+chown root:root "${DIRECTORY}"
+chmod 755 "${DIRECTORY}"
 
-    done
+# comenzar
+pushd "${DIRECTORY}" &>/dev/null
 
-    read  -p "Usuario [www-data]: " USER
+# crear directorios base y pub que es donde van los archivos php
+mkdir -p {etc,tmp,usr/bin,dev,pub}
+# symlinks
+ln -s usr/bin bin
+ln -s usr/lib lib
 
-    if [ -z $USER ]; then
-        USER="www-data"
-    fi
+# TODO montar como tmpfs
+chmod a+rw -R tmp
 
-    read -p "Grupo [www-data]: " GROUP
+# copiar archivos del sistema
+cp --dereference /etc/localtime etc/
+cp --archive /etc/{hosts,nsswitch.conf,resolv.conf} etc/
+cp --archive /lib/libnss_files* usr/lib/
+cp --archive /lib/libnss_dns* usr/lib/
 
-    if [ -z $GROUP ]; then
-        GROUP="www-data"
-    fi
+# generar un passwd especifico
+cp "${CUR}/"data/passwd etc/
+grep "^${USER}:" /etc/passwd >>etc/passwd
 
-    read -p "Escucha en... [/var/run/php5-fpm-\$pool.sock]: " LISTEN
+# generar un group especifico
+cd "${CUR}/"data/group etc/
+sed -i "s/{{USER}}/$USER/g" etc/group
 
-    if [ -z $LISTEN ]; then
-        LISTEN="/var/run/php5-fpm-\$pool.sock"
-    fi
+# permitir trabajar sobre pub
+chown -R ${USER}:${GROUP} pub/
+chmod -R g+s pub/
+chmod -R 750 pub/
 
-    read -p "Jail [ninguna]: " JAIL
+# crear archivos especiales
+mknod dev/null c 1 3
+mknod dev/random c 1 8
+mknod dev/urandom c 1 9
+chmod 666 dev/{null,random,urandom}
 
-    if [ ! -z $JAIL ]; then
-
-        if [ ! -d "${JAILS_PATH}/${JAIL}" ]; then
-            read -p "Jail $JAIL no existe, crear? (y/n) " CC
-            if [ $CC == "y" ]; then
-               CREATE_JAIL=1
-           fi
-
-       fi
-
-    fi
-
-#    read -p "Crear configuración de Nginx? (y/n) " NC
-
-#    if [ $NC -eq "y" ]; then
-#        NGINX_CONF=1
-#    fi
-
-    CONFIRM=1
-
-done
-
-TFILE=/tmp/$(date +%Y%m%d%H%s)
-
-cp data/pool.conf $TFILE
-
-sed -i "s|{{NAME}}|$(printf '%q' $NAME)|g" $TFILE
-sed -i "s|{{USER}}|$(printf '%q' $USER)|g" $TFILE
-sed -i "s|{{GROUP}}|$(printf '%q' $GROUP)|g" $TFILE
-sed -i "s|{{LISTEN}}|$(printf '%q' $LISTEN)|g" $TFILE
-
-if [ -z $JAIL ]; then
-    JAILP="/"
-else
-    JAILP="${JAILS_PATH}/${JAIL}"
-fi
-
-sed -i "s|{{CHROOT}}|$(printf '%q' $JAILP)|g" $TFILE
-
-DEST="${OUT_PATH}${POOL_PATH}/${NAME}.conf"
-
-if [ ! -d "${OUT_PATH}${POOL_PATH}" ]; then
-    mkdir -p "${OUT_PATH}${POOL_PATH}"
-fi
-
-echo "Copiando archivo de pool to $DEST"
-
-mv $TFILE $DEST
-
-if [ $CREATE_JAIL -eq 1 ]; then
-    echo "Creando JAIL"
-    ./create-php-jail.sh $JAIL
-fi
-
-echo "Listo"
+touch .jail
