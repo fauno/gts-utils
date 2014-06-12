@@ -23,7 +23,6 @@ useradd --comment "PHP-FPM Jail" \
         ${USER}
 
 sed -e "s|{{NAME}}|$NAME|g" \
-    -e "s|{{USER}}|$USER|g" \
     -e "s|{{GROUP}}|$GROUP|g" \
     "${CUR}/"data/pool.conf >"${POOLS}/${NAME}.conf"
 
