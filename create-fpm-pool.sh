@@ -17,7 +17,7 @@ test -f "${DIRECTORY}/.jail" && exit 1
 
 useradd --comment "PHP-FPM Jail" \
         --home-dir "/srv/http/${NAME}" \
-        --create-home \
+        --no-create-home \
         --shell /bin/false \
         --gid ${GROUP} \
         ${USER}
@@ -26,28 +26,28 @@ sed -e "s|{{NAME}}|$NAME|g" \
     -e "s|{{GROUP}}|$GROUP|g" \
     "${CUR}/"data/pool.conf >"${POOLS}/${NAME}.conf"
 
-mkdir -p "${DIRECTORY}"
 # asegurar que no se pueda escapar de la jaula
-chown root:root "${DIRECTORY}"
-chmod 755 "${DIRECTORY}"
+install -dm 755 -g root -u root "${DIRECTORY}"
 
 # comenzar
 pushd "${DIRECTORY}" &>/dev/null
 
 # crear directorios base y pub que es donde van los archivos php
-mkdir -p {etc,tmp,usr/{lib,bin},dev,pub}
+install -dm 755 -g root -u root {etc,tmp,usr/{lib,bin},dev,pub}
 # symlinks
 ln -s usr/bin bin
 ln -s usr/lib lib
 
 # TODO montar como tmpfs
-chmod a+rw -R tmp
+chmod a+rw tmp
+chmod a+t  tmp
+chmod u+s  tmp
 
 # copiar archivos del sistema
 cp --archive --dereference /etc/localtime etc/
 cp --archive /etc/{hosts,nsswitch.conf,resolv.conf} etc/
-cp --archive /lib/libnss_files* usr/lib/
-cp --archive /lib/libnss_dns* usr/lib/
+cp --archive --dereference /lib/libnss_files* usr/lib/
+cp --archive --dereference /lib/libnss_dns* usr/lib/
 
 # generar un passwd especifico
 cp "${CUR}/"data/passwd etc/
