@@ -40,3 +40,8 @@ las librerías a usr/lib/
 Para saber las librerías necesarias:
 
     ldd usr/bin/programa
+
+Con `to_chroot`:
+
+    to_chroot /srv/http/ejemplo.org /usr/bin/convert
+
