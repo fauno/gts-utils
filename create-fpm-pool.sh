@@ -27,13 +27,13 @@ sed -e "s|{{NAME}}|$NAME|g" \
     "${CUR}/"data/pool.conf >"${POOLS}/${NAME}.conf"
 
 # asegurar que no se pueda escapar de la jaula
-install -dm 755 -g root -u root "${DIRECTORY}"
+install -dm 755 -g root -o root "${DIRECTORY}"
 
 # comenzar
 pushd "${DIRECTORY}" &>/dev/null
 
 # crear directorios base y pub que es donde van los archivos php
-install -dm 755 -g root -u root {etc,tmp,usr/{lib,bin},dev,pub}
+install -dm 755 -g root -o root {etc,tmp,usr/{lib,bin},dev,pub}
 # symlinks
 ln -s usr/bin bin
 ln -s usr/lib lib
