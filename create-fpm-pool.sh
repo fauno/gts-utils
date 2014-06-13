@@ -50,14 +50,16 @@ cp --archive --dereference /lib/libnss_files* usr/lib/
 cp --archive --dereference /lib/libnss_dns* usr/lib/
 
 # generar un passwd especifico
-cp "${CUR}/"data/passwd etc/
+install -Dm644 "${CUR}/"data/passwd etc/passwd
 grep "^${USER}:" /etc/passwd >>etc/passwd
 
 # generar un group especifico
-cp "${CUR}/"data/group etc/
+install -Dm644 "${CUR}/"data/group etc/group
 sed -i "s/{{USER}}/$USER/g" etc/group
 
-chmod 644 etc/{group,passwd}
+# instalar esmtp estático como sendmail
+install -Dm644 "${CUR}/"data/esmtprc etc/esmtprc
+install -Dm755 "${CUR}/"data/sendmail usr/bin/sendmail
 
 # permitir trabajar sobre pub
 chown -R ${USER}:${GROUP} pub/

@@ -1,2 +1,3 @@
 root:x:0:root
 http:x:33:{{USER}}
+nobody:x:99:
