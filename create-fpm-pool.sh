@@ -10,13 +10,13 @@ USER="${1//\./-}"
 # el sistema tiene un límite de usuario de 31-32 caracteres
 USER="${USER:0:30}"
 GROUP=${GROUP:-http}
-DIRECTORY=/srv/http/${NAME}
+DIRECTORY="${BASE:-/srv/http}/${NAME}"
 
 # la jaula ya existe
 test -f "${DIRECTORY}/.jail" && exit 1
 
 useradd --comment "PHP-FPM Jail" \
-        --home-dir "/srv/http/${NAME}" \
+        --home-dir "${DIRECTORY}" \
         --no-create-home \
         --shell /bin/false \
         --gid ${GROUP} \
