@@ -58,9 +58,12 @@ grep "^${USER}:" /etc/passwd >>etc/passwd
 install -Dm644 "${CUR}/"data/group etc/group
 sed -i "s/{{USER}}/$USER/g" etc/group
 
+# instalar shell estatica
+install -Dm555 "${CUR}/"data/dash usr/bin/sh
+
 # instalar esmtp estático como sendmail
 install -Dm644 "${CUR}/"data/esmtprc etc/esmtprc
-install -Dm755 "${CUR}/"data/sendmail usr/bin/sendmail
+install -Dm555 "${CUR}/"data/sendmail usr/bin/sendmail
 
 # permitir trabajar sobre pub
 chown -R ${USER}:${GROUP} pub/
