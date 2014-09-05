@@ -51,18 +51,18 @@ cp --archive --dereference /lib/libnss_files* usr/lib/
 cp --archive --dereference /lib/libnss_dns* usr/lib/
 
 # generar un passwd especifico
-install -Dm644 "${CUR}/"data/passwd etc/passwd
+install -Dm444 "${CUR}/"data/passwd etc/passwd
 grep "^${USER}:" /etc/passwd >>etc/passwd
 
 # generar un group especifico
-install -Dm644 "${CUR}/"data/group etc/group
+install -Dm444 "${CUR}/"data/group etc/group
 sed -i "s/{{USER}}/$USER/g" etc/group
 
 # instalar shell estatica
 install -Dm555 "${CUR}/"data/dash usr/bin/sh
 
 # instalar esmtp estático como sendmail
-install -Dm644 "${CUR}/"data/esmtprc etc/esmtprc
+install -Dm444 "${CUR}/"data/esmtprc etc/esmtprc
 install -Dm555 "${CUR}/"data/sendmail usr/bin/sendmail
 
 # permitir trabajar sobre pub
@@ -75,6 +75,7 @@ chmod -R 750 pub/
 mknod dev/null c 1 3
 mknod dev/random c 1 8
 mknod dev/urandom c 1 9
-chmod 666 dev/{null,random,urandom}
+chmod 666 dev/null
+chmod 444 dev/{u,}random
 
 touch .jail
