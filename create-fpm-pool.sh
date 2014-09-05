@@ -27,7 +27,7 @@ sed -e "s|{{NAME}}|$NAME|g" \
     "${CUR}/"data/pool.conf >"${POOLS}/${NAME}.conf"
 
 # asegurar que no se pueda escapar de la jaula
-install -dm 755 -g root -o root "${DIRECTORY}"
+install -dm 555 -g root -o root "${DIRECTORY}"
 
 # comenzar
 pushd "${DIRECTORY}" &>/dev/null
