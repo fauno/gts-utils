@@ -47,8 +47,10 @@ chmod u+s  tmp
 # copiar archivos del sistema
 cp --archive --dereference /etc/localtime etc/
 cp --archive /etc/{hosts,nsswitch.conf,resolv.conf} etc/
-cp --archive --dereference /lib/libnss_files* usr/lib/
-cp --archive --dereference /lib/libnss_dns* usr/lib/
+ldconfig -p | grep -E "/libnss_(files|dns)" | cut -d ">" -f2 \
+sort -u | while read nss; do
+  cp --archive --dereference "${nss}" usr/lib/
+done
 
 # generar un passwd especifico
 install -Dm444 "${CUR}/"data/passwd etc/passwd
