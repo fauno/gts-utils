@@ -80,4 +80,20 @@ mknod dev/urandom c 1 9
 chmod 666 dev/null
 chmod 444 dev/{u,}random
 
+# copiar timezones
+install -dm755 -o root -g root usr/share/zoneinfo
+cp -a /usr/share/zoneinfo usr/share/
+
+# crear directorio de sesiones
+install -dm755 -o root -g root var/lib/php5
+install -dm1733 -o root -g root var/lib/php5/sessions
+ln -s php5 var/lib/php
+
+# limpiar las sesiones
+if ! test -f /etc/cron.d/php-fpm-sessions ; then
+  echo "09,39 * * * * root find ${BASE:-/srv/http}/*/var/lib/php5/sessions -name 'sess_*' -type f -cmin +24 -print0 | xargs -0 rm" >/etc/cron.d/php-fpm-sessions
+  chmod 700 /etc/cron.d/php-fpm-sessions
+  chown root:root /etc/cron.d/php-fpm-sessions
+fi
+
 touch .jail
