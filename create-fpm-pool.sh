@@ -11,6 +11,7 @@ USER="${1//\./-}"
 USER="${USER:0:30}"
 GROUP=${GROUP:-http}
 DIRECTORY="${BASE:-/srv/http}/${NAME}"
+LIB="${LIB:-/lib}"
 
 # la jaula ya existe
 test -f "${DIRECTORY}/.jail" && exit 1
@@ -48,7 +49,7 @@ chmod u+s  tmp
 cp --archive --dereference /etc/localtime etc/
 cp --archive /etc/{hosts,nsswitch.conf,resolv.conf} etc/
 ldconfig -p | grep -E "/libnss_(files|dns)" | cut -d ">" -f2 \
-sort -u | while read nss; do
+| sort -u | while read nss; do
   cp --archive --dereference "${nss}" usr/lib/
 done
 
