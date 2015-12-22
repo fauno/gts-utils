@@ -90,6 +90,9 @@ install -dm755 -o root -g root var/lib/php5
 install -dm1733 -o root -g root var/lib/php5/sessions
 ln -s php5 var/lib/php
 
+install -dm751 -o root -g root usr/lib/locale
+cp -a /usr/lib/locale/locale-archive usr/lib/locale/
+
 # limpiar las sesiones
 if ! test -f /etc/cron.d/php-fpm-sessions ; then
   echo "09,39 * * * * root find ${BASE:-/srv/http}/*/var/lib/php5/sessions -name 'sess_*' -type f -cmin +24 -print0 | xargs -0 rm" >/etc/cron.d/php-fpm-sessions
