@@ -74,6 +74,13 @@ chmod -R g+s pub/
 chmod -R u+s pub/
 chmod -R 750 pub/
 
+# engañar a php-fpm
+# TODO esto es un misterio, porque dandole DOCUMENT_ROOT=/pub y
+# SCRIPT_FILENAME=/pub/index.php a php-fpm deberia bastar, pero aun asi
+# intenta buscar las cosas en /srv/http...
+install -dm755 -o root -g root "${CUR}${CUR}"
+ln -s ../../../pub "${CUR}${CUR}/pub"
+
 # crear archivos especiales
 mknod dev/null c 1 3
 mknod dev/random c 1 8
