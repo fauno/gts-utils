@@ -34,7 +34,7 @@ install -dm 555 -g root -o root "${DIRECTORY}"
 pushd "${DIRECTORY}" &>/dev/null
 
 # crear directorios base y pub que es donde van los archivos php
-install -dm 755 -g root -o root {etc,tmp,usr/{lib,bin},pub}
+install -dm 755 -g root -o root {etc/ssl,tmp,usr/{lib,bin},pub}
 install -dm 111 -g root -o root dev
 # symlinks
 ln -s usr/bin bin
@@ -46,6 +46,7 @@ chmod a+t  tmp
 chmod u+s  tmp
 
 # copiar archivos del sistema
+cp --archive /etc/ssl/certs etc/ssl/
 cp --archive --dereference /etc/localtime etc/
 cp --archive /etc/{hosts,nsswitch.conf,resolv.conf} etc/
 ldconfig -p | grep -E "/libnss_(files|dns)" | cut -d ">" -f2 \
