@@ -79,8 +79,8 @@ chmod -R 750 pub/
 # TODO esto es un misterio, porque dandole DOCUMENT_ROOT=/pub y
 # SCRIPT_FILENAME=/pub/index.php a php-fpm deberia bastar, pero aun asi
 # intenta buscar las cosas en /srv/http...
-install -dm755 -o root -g root "${CUR}${CUR}"
-ln -s ../../../pub "${CUR}${CUR}/pub"
+install -dm755 -o root -g root "${DIRECTORY}${DIRECTORY}"
+ln -s ../../../pub "${DIRECTORY}${DIRECTORY}/pub"
 
 # crear archivos especiales
 mknod dev/null c 1 3
