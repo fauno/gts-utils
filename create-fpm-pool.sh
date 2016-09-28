@@ -39,6 +39,23 @@ install -dm 111 -g root -o root dev
 # symlinks
 ln -s usr/bin bin
 ln -s usr/lib lib
+ln -s usr/lib lib64
+
+arch="$(uname -m)"
+distro="$(lsb_release -is)"
+case ${distro} in
+# Debian is all over the place
+  Debian)
+    case ${arch} in
+      x86_64)
+        install -dm 755 -o root -g root usr/lib/x86_64-linux-gnu
+        cp -aL /lib64/ld-linux-x86-64.so.2 usr/lib/x86_64-linux-gnu/
+        cp -aL /lib/x86_64-linux-gnu/libc.so.6 usr/lib/x86_64-linux-gnu/
+        cp -aL /lib/x86_64-linux-gnu/libresolv.so.2 usr/lib/x86_64-linux-gnu/
+        ;;
+    esac
+    ;;
+esac
 
 # TODO montar como tmpfs
 chmod a+rw tmp
