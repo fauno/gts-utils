@@ -38,6 +38,7 @@ install -dm 755 -g root -o root {etc/ssl,tmp,usr/{lib,bin},pub}
 install -dm 111 -g root -o root dev
 # symlinks
 ln -s usr/bin bin
+ln -s usr/bin sbin
 ln -s usr/lib lib
 ln -s usr/lib lib64
 
